@@ -1,24 +1,92 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jatnika - Creative Web Developer & AI Enthusiast</title>
-    <meta name="description" content="Portfolio of Jatnika, a creative web developer specializing in modern web applications, UI/UX design, and AI integration. View my work and get in touch." />
-    <meta name="author" content="Jatnika" />
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azzam Ananta — Portfolio</title>
+    <style>
+        body { background: #080c10; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .hero { text-align: center; }
+        h1 { color: #00c896; font-size: 3rem; margin-bottom: 10px; }
+        
+        /* Chatbot UI */
+        #chat-window { position: fixed; bottom: 20px; right: 20px; width: 320px; height: 400px; background: #0d1318; border: 1px solid #00c896; border-radius: 12px; display: flex; flex-direction: column; }
+        #chat-header { background: #00c896; color: black; padding: 10px; font-weight: bold; border-radius: 10px 10px 0 0; }
+        #chat-box { flex: 1; padding: 10px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+        .bot-msg { background: #1a242d; padding: 8px; border-radius: 8px; align-self: flex-start; }
+        .user-msg { background: #00c896; color: black; padding: 8px; border-radius: 8px; align-self: flex-end; }
+        #chat-input-area { display: flex; border-top: 1px solid #222; }
+        #chat-input { flex: 1; background: none; border: none; color: white; padding: 10px; outline: none; }
+        #send-btn { background: #00c896; border: none; padding: 10px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
 
-    <meta property="og:title" content="Jatnika - Creative Web Developer & AI Enthusiast" />
-    <meta property="og:description" content="Portfolio of Jatnika, a creative web developer specializing in modern web applications, UI/UX design, and AI integration." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+<div class="hero">
+    <h1>AZZAM ANANTA</h1>
+    <p>Teknik Informatika | Pradita University</p>
+    <p style="color: #607080;">Swipe tangan kamu untuk navigasi atau tanya AI Asisten di bawah!</p>
+</div>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+<div id="chat-window">
+    <div id="chat-header">Asisten Digital Azzam</div>
+    <div id="chat-box">
+        <div class="bot-msg">Halo! Saya asisten Azzam. Tanya saya soal pengalaman magang di PT Sariling, hobi daki gunung Merbabu, atau soal kodingan Python Azzam!</div>
+    </div>
+    <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Tanya sesuatu...">
+        <button id="send-btn">➤</button>
+    </div>
+</div>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<script>
+    const API_KEY = "AIzaSyBox1i9SDkKfPg2MuIQlYx8jsBOmblSNOs"; // API Key Azzam
+    const chatBox = document.getElementById('chat-box');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // DATABASE PENGETAHUAN AZZAM
+    const SYSTEM_PROMPT = "Kamu adalah asisten Azzam. Azzam adalah mahasiswa Teknik Informatika Pradita University. Dia magang di PT Sariling Aneka Energi (Juli 2025 - Jan 2026). Hobinya daki Gunung Merbabu jalur Suwanting dan Gunung Slamet. Dia jago Python & OpenCV, punya motor Vario 125 New, dan hasil Beep Test-nya bagus. Jawab dengan ramah.";
+
+    async function sendToGemini() {
+        const text = chatInput.value;
+        if (!text) return;
+        
+        appendMsg(text, 'user-msg');
+        chatInput.value = '';
+
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: SYSTEM_PROMPT + " Pertanyaan User: " + text }] }] })
+            });
+            const data = await res.json();
+            const reply = data.candidates[0].content.parts[0].text;
+            appendMsg(reply, 'bot-msg');
+        } catch (e) {
+            appendMsg("Maaf Zam, API Key-nya lagi sibuk nih.", 'bot-msg');
+        }
+    }
+
+    function appendMsg(msg, type) {
+        const div = document.createElement('div');
+        div.className = type;
+        div.innerText = msg;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    sendBtn.onclick = sendToGemini;
+    chatInput.onkeydown = (e) => { if(e.key === 'Enter') sendToGemini(); };
+
+    // Koneksi ke Sensor Tangan (WebSocket)
+    const ws = new WebSocket("ws://localhost:8765");
+    ws.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.gesture === "swipe_left") alert("Pindah ke Slide Berikutnya (Simulasi)");
+    };
+</script>
+
+</body>
 </html>
