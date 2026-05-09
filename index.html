@@ -1,49 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Azzam Ananta Portfolio</title>
-    <style>
-        body { background: #080c10; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
-        h1 { color: #00c896; font-size: 3rem; }
-        #chat-window { position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: #0d1318; border: 1px solid #00c896; border-radius: 10px; display: flex; flex-direction: column; }
-        #chat-box { flex: 1; padding: 10px; overflow-y: auto; text-align: left; font-size: 14px; }
-        #chat-input { padding: 10px; background: #1a242d; border: none; color: white; }
-    </style>
-</head>
-<body>
-    <h1>AZZAM ANANTA</h1>
-    <p>Teknik Informatika | Pradita University</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jatnika - Creative Web Developer & AI Enthusiast</title>
+    <meta name="description" content="Portfolio of Jatnika, a creative web developer specializing in modern web applications, UI/UX design, and AI integration. View my work and get in touch." />
+    <meta name="author" content="Jatnika" />
 
-    <div id="chat-window">
-        <div style="background:#00c896; color:black; padding:10px;">Asisten AI Azzam</div>
-        <div id="chat-box"></div>
-        <input type="text" id="chat-input" placeholder="Tanya saya...">
-    </div>
+    <meta property="og:title" content="Jatnika - Creative Web Developer & AI Enthusiast" />
+    <meta property="og:description" content="Portfolio of Jatnika, a creative web developer specializing in modern web applications, UI/UX design, and AI integration." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
 
-    <script>
-        const API_KEY = "AIzaSyBox1i9SDkKfPg2MuIQlYx8jsBOmblSNOs";
-        const input = document.getElementById('chat-input');
-        const box = document.getElementById('chat-box');
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@Lovable" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  </head>
 
-        input.addEventListener('keypress', async (e) => {
-            if (e.key === 'Enter') {
-                const text = input.value;
-                box.innerHTML += `<div><b>Kamu:</b> ${text}</div>`;
-                input.value = '';
-
-                // Kirim ke Gemini
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: "Kamu asisten Azzam, mahasiswa TI Pradita University. Jawab pertanyaan ini: " + text }] }] })
-                });
-                const data = await res.json();
-                const reply = data.candidates[0].content.parts[0].text;
-                box.innerHTML += `<div style="color:#00c896"><b>AI:</b> ${reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-            }
-        });
-    </script>
-</body>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
